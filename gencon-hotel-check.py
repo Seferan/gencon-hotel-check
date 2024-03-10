@@ -136,7 +136,7 @@ parser.add_argument('--hotel-regex', type = type_regex, metavar = 'PATTERN', def
 parser.add_argument('--room-regex', type = type_regex, metavar = 'PATTERN', default = reCompile('.*'), help = 'regular expression to match room against')
 parser.add_argument('--show-all', action = 'store_true', help = 'show all rooms, even if miles away (these rooms never trigger alerts)')
 group = parser.add_mutually_exclusive_group()
-group.add_argument('--delay', type = int, default = 1, metavar = 'MINS', help = 'search every MINS minute(s)')
+group.add_argument('--delay', type = int, default = 60, metavar = 'MINS', help = 'search every SECS second(s)')
 group.add_argument('--once', action = 'store_true', help = 'search once and exit')
 parser.add_argument('--test', action = 'store_true', dest = 'test', help = 'trigger every specified alert and exit')
 
@@ -363,4 +363,4 @@ while True:
 		print(str(e))
 	if args.once:
 		exit(0)
-	sleep(60 * args.delay)
+	sleep(args.delay)
