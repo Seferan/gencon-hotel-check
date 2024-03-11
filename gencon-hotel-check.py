@@ -253,8 +253,7 @@ for alert in args.alerts or []:
 	elif alert[0] == 'discord':		
 		_, webhookURL = alert
 		print(webhookURL)
-		def handle(preamble, hotels):
-			print(hotels)
+		def handle(preamble, hotels):			
 			values = {
 				'username': 'Gencon Hotel Bot',
 				'content': '**New Hotel Options Found by Computer ' + socket.gethostname() + '!**\n' 
