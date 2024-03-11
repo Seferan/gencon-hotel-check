@@ -9,6 +9,8 @@ from ssl import create_default_context as create_ssl_context, CERT_NONE, SSLErro
 from sys import stdout, version_info
 from threading import Thread
 from time import sleep
+from discord import SyncWebhook
+import socket
 
 if version_info < (2, 7, 9):
 	print("Requires Python 2.7.9+")
@@ -150,6 +152,7 @@ group.add_argument('--cmd', dest = 'alerts', action = 'append', type = lambda ar
 group.add_argument('--browser', dest = 'alerts', action = 'append_const', const = ('browser',), help = 'open the Passkey website in the default browser')
 group.add_argument('--email', dest = 'alerts', action = EmailAction, nargs = 3, metavar = ('HOST', 'FROM', 'TO'), help = 'send an e-mail')
 group.add_argument('--pushbullet', dest = 'alerts', action = 'append', type = lambda arg: ('pushbullet', arg), metavar = 'ACCESS_TOKEN', help = 'send a Pushbullet notification')
+group.add_argument('--discord', dest = 'alerts', action = 'append', type = lambda arg: ('discord', arg), metavar = 'ACCESS_TOKEN', help = 'send a discord webhook notification')
 
 args = parser.parse_args()
 
@@ -245,6 +248,22 @@ for alert in args.alerts or []:
 			if resp.getcode() != 200:
 				print("Response %d trying to send Pushbullet alert" % resp.getcode())
 				return False
+			return True
+		alertFns.append(handle)
+	elif alert[0] == 'discord':		
+		_, webhookURL = alert
+		print(webhookURL)
+		def handle(preamble, hotels):
+			print(hotels)
+			values = {
+				'username': 'Gencon Hotel Bot',
+				'content': '**New Hotel Options Found by Computer ' + socket.gethostname() + '!**\n' 
+				+ '\n'.join("%s: %s - %s" % (hotel['name'], hotel['room'], hotel['distance']) for hotel in hotels)
+				+ '\n' + '<' + baseUrl + '/home>'
+    			+ '\n====================================',
+			}
+			webhook = SyncWebhook.from_url(webhookURL)			
+			webhook.send(**values)
 			return True
 		alertFns.append(handle)
 
