@@ -251,8 +251,7 @@ for alert in args.alerts or []:
 			return True
 		alertFns.append(handle)
 	elif alert[0] == 'discord':		
-		_, webhookURL = alert
-		print(webhookURL)
+		_, webhookURL = alert		
 		def handle(preamble, hotels):			
 			values = {
 				'username': 'Gencon Hotel Bot',
